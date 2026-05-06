@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { AnonymizationRule, Platform, ReportConfig, ReportOptions } from '@/types'
 import { generateId } from '@/utils/text'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   config: ReportConfig
@@ -84,35 +87,27 @@ function handlePlatformChange(e: Event) {
 
 <template>
   <div class="panel">
-    <!-- Header -->
-    <div class="panel-header">
-      <div class="panel-title">
-        Evidence<span class="panel-title-accent"> Anonymizer</span>
-      </div>
-      <div class="panel-subtitle">GitHub · Commit Reports</div>
-    </div>
-
     <!-- Scrollable form -->
     <div class="panel-body">
 
       <!-- Repositories -->
       <section class="section">
-        <div class="section-label">Repositories</div>
+        <div class="section-label">{{ t('panel.repos.label') }}</div>
         <div class="row-gap">
           <input
             type="text"
             :placeholder="
-              config.platform === 'bitbucket-server' ? 'PROJECT/repo or full /scm/… URL' :
-              config.platform === 'gitlab' ? 'namespace/repo or full URL' :
-              'owner/repo or full GitHub URL'
+              config.platform === 'bitbucket-server' ? t('panel.repos.placeholderBitbucket') :
+              config.platform === 'gitlab' ? t('panel.repos.placeholderGitlab') :
+              t('panel.repos.placeholderGithub')
             "
             v-model="repoInput"
             style="flex: 1"
             @keydown.enter="addRepo"
           />
-          <button class="add-btn" @click="addRepo">Add</button>
+          <button class="add-btn" @click="addRepo">{{ t('panel.repos.add') }}</button>
         </div>
-        <p class="hint">Press Enter or click Add. You can add multiple repositories.</p>
+        <p class="hint">{{ t('panel.repos.hint') }}</p>
         <div v-if="config.repositories.length > 0" class="tag-list">
           <span
             v-for="r in config.repositories"
@@ -129,10 +124,10 @@ function handlePlatformChange(e: Event) {
 
       <!-- Date Range -->
       <section class="section">
-        <div class="section-label">Date Range</div>
+        <div class="section-label">{{ t('panel.dates.label') }}</div>
         <div class="date-grid">
           <div>
-            <div class="sub-label">From</div>
+            <div class="sub-label">{{ t('panel.dates.from') }}</div>
             <input
               type="date"
               :value="config.dateFrom"
@@ -140,7 +135,7 @@ function handlePlatformChange(e: Event) {
             />
           </div>
           <div>
-            <div class="sub-label">To</div>
+            <div class="sub-label">{{ t('panel.dates.to') }}</div>
             <input
               type="date"
               :value="config.dateTo"
@@ -154,18 +149,18 @@ function handlePlatformChange(e: Event) {
 
       <!-- Authors -->
       <section class="section">
-        <div class="section-label">Authors</div>
+        <div class="section-label">{{ t('panel.authors.label') }}</div>
         <div class="row-gap">
           <input
             type="text"
-            placeholder="Name or email…"
+            :placeholder="t('panel.authors.placeholder')"
             v-model="authorInput"
             style="flex: 1"
             @keydown.enter="addAuthor"
           />
-          <button class="add-btn" @click="addAuthor">Add</button>
+          <button class="add-btn" @click="addAuthor">{{ t('panel.authors.add') }}</button>
         </div>
-        <p class="hint">Leave empty to include all authors.</p>
+        <p class="hint">{{ t('panel.authors.hint') }}</p>
         <div v-if="config.authors.length > 0" class="tag-list">
           <span
             v-for="a in config.authors"
@@ -182,23 +177,23 @@ function handlePlatformChange(e: Event) {
 
       <!-- Anonymization Rules -->
       <section class="section">
-        <div class="section-label">Anonymization Rules</div>
+        <div class="section-label">{{ t('panel.rules.label') }}</div>
         <div class="rule-inputs">
           <input
             type="text"
-            placeholder="Original text…"
+            :placeholder="t('panel.rules.originalPlaceholder')"
             v-model="ruleOriginal"
           />
           <div class="row-gap row-gap--center">
             <span class="rule-arrow">→</span>
             <input
               type="text"
-              placeholder="Replacement (default: [REDACTED])"
+              :placeholder="t('panel.rules.replacementPlaceholder')"
               v-model="ruleReplacement"
               style="flex: 1"
               @keydown.enter="addRule"
             />
-            <button class="add-btn" @click="addRule">Add</button>
+            <button class="add-btn" @click="addRule">{{ t('panel.rules.add') }}</button>
           </div>
         </div>
 
@@ -208,11 +203,11 @@ function handlePlatformChange(e: Event) {
             :checked="config.options.anonymizeEmails"
             @change="(e) => updateOption('anonymizeEmails', (e.target as HTMLInputElement).checked)"
           />
-          Auto-anonymize email addresses
+          {{ t('panel.rules.autoEmail') }}
         </label>
 
         <div v-if="config.rules.length === 0" class="rules-empty">
-          No rules yet.
+          {{ t('panel.rules.noRules') }}
         </div>
         <div v-else class="rules-list">
           <div
@@ -239,7 +234,7 @@ function handlePlatformChange(e: Event) {
                 :checked="rule.caseSensitive"
                 @change="(e) => updateRule(rule.id, { caseSensitive: (e.target as HTMLInputElement).checked })"
               />
-              Case sensitive
+              {{ t('panel.rules.caseSensitive') }}
             </label>
           </div>
         </div>
@@ -249,24 +244,24 @@ function handlePlatformChange(e: Event) {
 
       <!-- Report Options -->
       <section class="section">
-        <div class="section-label">Report Options</div>
-        <div class="field-label">Title (optional)</div>
+        <div class="section-label">{{ t('panel.options.label') }}</div>
+        <div class="field-label">{{ t('panel.options.titleLabel') }}</div>
         <input
           type="text"
-          placeholder="e.g. Q1 2025 Development Evidence"
+          :placeholder="t('panel.options.titlePlaceholder')"
           :value="config.options.reportTitle"
           style="margin-bottom: 12px"
           @input="(e) => updateOption('reportTitle', (e.target as HTMLInputElement).value)"
         />
 
-        <div class="sub-label" style="margin-bottom: 8px">Content</div>
+        <div class="sub-label" style="margin-bottom: 8px">{{ t('panel.options.content') }}</div>
         <label class="check-opt">
           <input
             type="checkbox"
             :checked="config.options.showHashes"
             @change="(e) => updateOption('showHashes', (e.target as HTMLInputElement).checked)"
           />
-          Show commit hashes
+          {{ t('panel.options.showHashes') }}
         </label>
         <label v-if="config.options.showHashes" class="check-opt">
           <input
@@ -274,7 +269,7 @@ function handlePlatformChange(e: Event) {
             :checked="config.options.showFullHashes"
             @change="(e) => updateOption('showFullHashes', (e.target as HTMLInputElement).checked)"
           />
-          Show full hashes (40 chars)
+          {{ t('panel.options.showFullHashes') }}
         </label>
         <label class="check-opt">
           <input
@@ -282,7 +277,7 @@ function handlePlatformChange(e: Event) {
             :checked="config.options.showLinks"
             @change="(e) => updateOption('showLinks', (e.target as HTMLInputElement).checked)"
           />
-          Show links to GitHub
+          {{ t('panel.options.showLinks') }}
         </label>
         <label class="check-opt">
           <input
@@ -290,7 +285,7 @@ function handlePlatformChange(e: Event) {
             :checked="config.options.showFiles"
             @change="(e) => updateOption('showFiles', (e.target as HTMLInputElement).checked)"
           />
-          Show modified files
+          {{ t('panel.options.showFiles') }}
         </label>
         <label class="check-opt">
           <input
@@ -298,28 +293,28 @@ function handlePlatformChange(e: Event) {
             :checked="config.options.showStats"
             @change="(e) => updateOption('showStats', (e.target as HTMLInputElement).checked)"
           />
-          Show line stats (+/−)
+          {{ t('panel.options.showStats') }}
         </label>
 
-        <div class="sub-label" style="margin-top: 12px; margin-bottom: 8px">Layout</div>
+        <div class="sub-label" style="margin-top: 12px; margin-bottom: 8px">{{ t('panel.options.layout') }}</div>
         <select
           :value="config.options.layout"
           style="width: 100%; margin-bottom: 8px"
           @change="(e) => updateOption('layout', (e.target as HTMLSelectElement).value)"
         >
-          <option value="flat">Flat list</option>
-          <option value="day">Group by day</option>
-          <option value="repo">Group by repository</option>
+          <option value="flat">{{ t('panel.options.layoutFlat') }}</option>
+          <option value="day">{{ t('panel.options.layoutDay') }}</option>
+          <option value="repo">{{ t('panel.options.layoutRepo') }}</option>
         </select>
 
-        <div class="sub-label" style="margin-top: 12px; margin-bottom: 8px">Export</div>
+        <div class="sub-label" style="margin-top: 12px; margin-bottom: 8px">{{ t('panel.options.export') }}</div>
         <label class="check-opt">
           <input
             type="checkbox"
             :checked="config.options.splitByAuthor"
             @change="(e) => updateOption('splitByAuthor', (e.target as HTMLInputElement).checked)"
           />
-          One PDF per author
+          {{ t('panel.options.splitByAuthor') }}
         </label>
       </section>
 
@@ -327,8 +322,8 @@ function handlePlatformChange(e: Event) {
 
       <!-- Connection -->
       <section class="section">
-        <div class="section-label">Connection</div>
-        <div class="field-label">Platform</div>
+        <div class="section-label">{{ t('panel.connection.label') }}</div>
+        <div class="field-label">{{ t('panel.connection.platform') }}</div>
         <select style="width: 100%; margin-bottom: 12px" :value="config.platform" @change="handlePlatformChange">
           <option value="github">GitHub</option>
           <option value="bitbucket-server">Bitbucket Server</option>
@@ -336,7 +331,7 @@ function handlePlatformChange(e: Event) {
         </select>
 
         <template v-if="config.platform === 'bitbucket-server'">
-          <div class="field-label">Server URL</div>
+          <div class="field-label">{{ t('panel.connection.serverUrl') }}</div>
           <input
             type="url"
             placeholder="https://bitbucket.company.com"
@@ -344,7 +339,7 @@ function handlePlatformChange(e: Event) {
             style="margin-bottom: 8px"
             @input="(e) => emit('update:config', { ...config, serverUrl: (e.target as HTMLInputElement).value })"
           />
-          <div class="field-label">Username</div>
+          <div class="field-label">{{ t('panel.connection.username') }}</div>
           <input
             type="text"
             placeholder="j.usuario"
@@ -352,18 +347,18 @@ function handlePlatformChange(e: Event) {
             style="margin-bottom: 8px"
             @input="(e) => emit('update:config', { ...config, username: (e.target as HTMLInputElement).value })"
           />
-          <div class="field-label">Password</div>
+          <div class="field-label">{{ t('panel.connection.password') }}</div>
           <input
             type="password"
             placeholder="••••••••"
             :value="config.token ?? ''"
             @input="(e) => emit('update:config', { ...config, token: (e.target as HTMLInputElement).value })"
           />
-          <p class="hint">Credentials are only used client-side, never stored.</p>
+          <p class="hint">{{ t('panel.connection.credentialsHint') }}</p>
         </template>
 
         <template v-if="config.platform === 'gitlab'">
-          <div class="field-label">Server URL</div>
+          <div class="field-label">{{ t('panel.connection.serverUrl') }}</div>
           <input
             type="url"
             placeholder="https://gitlab.com"
@@ -371,8 +366,8 @@ function handlePlatformChange(e: Event) {
             style="margin-bottom: 8px"
             @input="(e) => emit('update:config', { ...config, serverUrl: (e.target as HTMLInputElement).value })"
           />
-          <p class="hint" style="margin-bottom: 8px">Leave empty for gitlab.com.</p>
-          <div class="field-label">Personal Access Token</div>
+          <p class="hint" style="margin-bottom: 8px">{{ t('panel.connection.gitlabUrlHint') }}</p>
+          <div class="field-label">{{ t('panel.connection.token') }}</div>
           <input
             type="password"
             placeholder="glpat-xxxxxxxxxxxx"
@@ -386,12 +381,12 @@ function handlePlatformChange(e: Event) {
               target="_blank"
               rel="noopener noreferrer"
               class="hint-link"
-            >Generate one ↗</a>
+            >{{ t('panel.connection.generateToken') }}</a>
           </p>
         </template>
 
         <template v-if="config.platform === 'github'">
-          <div class="field-label">Personal Access Token</div>
+          <div class="field-label">{{ t('panel.connection.token') }}</div>
           <input
             type="password"
             placeholder="ghp_xxxxxxxxxxxx"
@@ -399,13 +394,13 @@ function handlePlatformChange(e: Event) {
             @input="(e) => emit('update:config', { ...config, token: (e.target as HTMLInputElement).value })"
           />
           <p class="hint">
-            Optional. Raises limit to 5,000 req/hour. Needed for private repos.&nbsp;
+            {{ t('panel.connection.githubTokenHint') }}&nbsp;
             <a
               href="https://github.com/settings/tokens/new?description=github-evidence-anonymizer&scopes=repo"
               target="_blank"
               rel="noopener noreferrer"
               class="hint-link"
-            >Generate one ↗</a>
+            >{{ t('panel.connection.generateToken') }}</a>
           </p>
         </template>
       </section>
@@ -421,7 +416,7 @@ function handlePlatformChange(e: Event) {
         @click="emit('generate')"
       >
         <span v-if="isLoading" class="spinner animate-spin" />
-        {{ isLoading ? 'Fetching…' : 'Generate Evidence Report' }}
+        {{ isLoading ? t('panel.generating') : t('panel.generate') }}
       </button>
     </div>
   </div>

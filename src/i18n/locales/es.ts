@@ -1,6 +1,5 @@
 export default {
   header: {
-    title: 'Evidence Anonymizer',
     subtitle: 'Anonimiza historial de commits para informes',
   },
   footer: {
@@ -10,5 +9,66 @@ export default {
   theme: {
     dark: 'Cambiar a modo claro',
     light: 'Cambiar a modo oscuro',
+  },
+  panel: {
+    repos: {
+      label: 'Repositorios',
+      add: 'Añadir',
+      hint: 'Pulsa Enter o haz clic en Añadir. Puedes añadir varios repositorios.',
+      placeholderGithub: 'propietario/repo o URL de GitHub',
+      placeholderBitbucket: 'PROYECTO/repo o URL /scm/… completa',
+      placeholderGitlab: 'namespace/repo o URL completa',
+    },
+    dates: {
+      label: 'Rango de fechas',
+      from: 'Desde',
+      to: 'Hasta',
+    },
+    authors: {
+      label: 'Autores',
+      placeholder: 'Nombre o email…',
+      add: 'Añadir',
+      hint: 'Déjalo vacío para incluir todos los autores.',
+    },
+    rules: {
+      label: 'Reglas de anonimización',
+      originalPlaceholder: 'Texto original…',
+      replacementPlaceholder: 'Reemplazo (por defecto: [REDACTED])',
+      add: 'Añadir',
+      autoEmail: 'Anonimizar emails automáticamente',
+      noRules: 'Sin reglas todavía.',
+      caseSensitive: 'Distinguir mayúsculas',
+    },
+    options: {
+      label: 'Opciones del informe',
+      titleLabel: 'Título (opcional)',
+      titlePlaceholder: 'ej. Evidencia de Desarrollo Q1 2025',
+      content: 'Contenido',
+      showHashes: 'Mostrar hashes de commit',
+      showFullHashes: 'Hashes completos (40 caracteres)',
+      showLinks: 'Mostrar enlaces a GitHub',
+      showFiles: 'Mostrar archivos modificados',
+      showStats: 'Mostrar estadísticas (+/−)',
+      layout: 'Disposición',
+      layoutFlat: 'Lista plana',
+      layoutDay: 'Agrupar por día',
+      layoutRepo: 'Agrupar por repositorio',
+      export: 'Exportar',
+      splitByAuthor: 'Un PDF por autor',
+    },
+    connection: {
+      label: 'Conexión',
+      platform: 'Plataforma',
+      serverUrl: 'URL del servidor',
+      username: 'Usuario',
+      password: 'Contraseña',
+      token: 'Token de acceso personal',
+      credentialsHint: 'Las credenciales solo se usan en el cliente, nunca se almacenan.',
+      gitlabUrlHint: 'Déjalo vacío para gitlab.com.',
+      githubTokenHint: 'Opcional. Aumenta el límite a 5.000 req/hora. Necesario para repos privados.',
+      generateToken: 'Generar uno ↗',
+    },
+    generate: 'Generar informe de evidencias',
+    generating: 'Obteniendo datos…',
   },
 }

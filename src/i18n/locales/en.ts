@@ -1,6 +1,5 @@
 export default {
   header: {
-    title: 'Evidence Anonymizer',
     subtitle: 'Anonymize Git commit history for reports',
   },
   footer: {
@@ -10,5 +9,66 @@ export default {
   theme: {
     dark: 'Switch to light mode',
     light: 'Switch to dark mode',
+  },
+  panel: {
+    repos: {
+      label: 'Repositories',
+      add: 'Add',
+      hint: 'Press Enter or click Add. You can add multiple repositories.',
+      placeholderGithub: 'owner/repo or full GitHub URL',
+      placeholderBitbucket: 'PROJECT/repo or full /scm/… URL',
+      placeholderGitlab: 'namespace/repo or full URL',
+    },
+    dates: {
+      label: 'Date Range',
+      from: 'From',
+      to: 'To',
+    },
+    authors: {
+      label: 'Authors',
+      placeholder: 'Name or email…',
+      add: 'Add',
+      hint: 'Leave empty to include all authors.',
+    },
+    rules: {
+      label: 'Anonymization Rules',
+      originalPlaceholder: 'Original text…',
+      replacementPlaceholder: 'Replacement (default: [REDACTED])',
+      add: 'Add',
+      autoEmail: 'Auto-anonymize email addresses',
+      noRules: 'No rules yet.',
+      caseSensitive: 'Case sensitive',
+    },
+    options: {
+      label: 'Report Options',
+      titleLabel: 'Title (optional)',
+      titlePlaceholder: 'e.g. Q1 2025 Development Evidence',
+      content: 'Content',
+      showHashes: 'Show commit hashes',
+      showFullHashes: 'Show full hashes (40 chars)',
+      showLinks: 'Show links to GitHub',
+      showFiles: 'Show modified files',
+      showStats: 'Show line stats (+/−)',
+      layout: 'Layout',
+      layoutFlat: 'Flat list',
+      layoutDay: 'Group by day',
+      layoutRepo: 'Group by repository',
+      export: 'Export',
+      splitByAuthor: 'One PDF per author',
+    },
+    connection: {
+      label: 'Connection',
+      platform: 'Platform',
+      serverUrl: 'Server URL',
+      username: 'Username',
+      password: 'Password',
+      token: 'Personal Access Token',
+      credentialsHint: 'Credentials are only used client-side, never stored.',
+      gitlabUrlHint: 'Leave empty for gitlab.com.',
+      githubTokenHint: 'Optional. Raises limit to 5,000 req/hour. Needed for private repos.',
+      generateToken: 'Generate one ↗',
+    },
+    generate: 'Generate Evidence Report',
+    generating: 'Fetching…',
   },
 }
