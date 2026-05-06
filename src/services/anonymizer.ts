@@ -1,4 +1,4 @@
-import { Commit, AnonymizationRule, ReportOptions } from '@/types';
+import type { Commit, AnonymizationRule, ReportOptions } from '@/types';
 import { applyAnonymizationWithEmailMask } from '@/utils/text';
 
 export function anonymizeCommit(

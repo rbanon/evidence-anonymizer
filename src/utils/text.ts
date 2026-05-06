@@ -1,4 +1,4 @@
-import { AnonymizationRule } from '@/types';
+import type { AnonymizationRule } from '@/types';
 
 export function applyAnonymization(text: string, rules: AnonymizationRule[]): string {
   let result = text;

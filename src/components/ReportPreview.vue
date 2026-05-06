@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
-import { ReportData, LoadingState, FetchProgress, Commit, CommitGroup, ReportOptions } from '@/types'
+import type { ReportData, LoadingState, FetchProgress, Commit, CommitGroup, ReportOptions } from '@/types'
 import { formatDate, formatDateTime, formatDateGroup, getDateKey } from '@/utils/dates'
 
 const props = defineProps<{

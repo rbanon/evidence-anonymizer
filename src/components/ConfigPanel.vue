@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { AnonymizationRule, Platform, ReportConfig, ReportOptions } from '@/types'
+import type { AnonymizationRule, Platform, ReportConfig, ReportOptions } from '@/types'
 import { generateId } from '@/utils/text'
 
 const props = defineProps<{

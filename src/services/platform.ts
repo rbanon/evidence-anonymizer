@@ -1,4 +1,4 @@
-import { Repository, Commit, ReportConfig, FetchProgress } from '@/types';
+import type { Repository, Commit, ReportConfig, FetchProgress } from '@/types';
 import { fetchRepository, fetchCommits } from './github';
 import { fetchRepositoryBitbucket, fetchCommitsBitbucket } from './bitbucket';
 import { fetchRepositoryGitLab, fetchCommitsGitLab } from './gitlab';

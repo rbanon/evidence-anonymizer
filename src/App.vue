@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import ConfigPanel from '@/components/ConfigPanel.vue'
 import ReportPreview from '@/components/ReportPreview.vue'
-import { ReportConfig, ReportData, Repository, Commit, LoadingState, FetchProgress } from '@/types'
+import type { ReportConfig, ReportData, Repository, Commit, LoadingState, FetchProgress } from '@/types'
 import { parseRepoInput } from '@/utils/text'
 import { platformFetchRepository, platformFetchCommits } from '@/services/platform'
 import { buildReport } from '@/services/reportGenerator'

@@ -1,4 +1,4 @@
-import { Repository, Commit, FetchProgress } from '@/types';
+import type { Repository, Commit, FetchProgress } from '@/types';
 
 const API = '/rest/api/1.0';
 

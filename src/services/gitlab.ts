@@ -1,4 +1,4 @@
-import { Repository, Commit, FetchProgress } from '@/types';
+import type { Repository, Commit, FetchProgress } from '@/types';
 
 async function glFetch<T>(url: string, token: string): Promise<T> {
   const res = await fetch(url, {

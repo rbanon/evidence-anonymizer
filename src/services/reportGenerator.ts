@@ -1,4 +1,4 @@
-import { Commit, Repository, ReportConfig, ReportData, CommitGroup } from '@/types';
+import type { Commit, Repository, ReportConfig, ReportData, CommitGroup } from '@/types';
 import { getDateKey } from '@/utils/dates';
 import { anonymizeCommits } from './anonymizer';
 

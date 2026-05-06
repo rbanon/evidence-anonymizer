@@ -1,4 +1,4 @@
-import { Repository, Commit, FetchProgress } from '@/types';
+import type { Repository, Commit, FetchProgress } from '@/types';
 
 const BASE = 'https://api.github.com';
 
