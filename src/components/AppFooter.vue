@@ -1,15 +1,15 @@
 <template>
   <footer class="footer no-print">
     <div class="footer__inner">
-      <span class="footer__credit">
-        {{ t('footer.builtBy') }}
-        <a
-          href="https://github.com/banonrafael"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="footer__link"
-        >{{ t('footer.author') }}</a>
-      </span>
+      <a
+        href="https://github.com/banonrafael"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer__credit"
+      >
+        <img src="@/assets/img/rb-logo.jpg" alt="RB" class="footer__logo" />
+        <span>{{ t('footer.builtBy') }} {{ t('footer.author') }}</span>
+      </a>
     </div>
   </footer>
 </template>
@@ -35,18 +35,29 @@ const { t } = useI18n()
   }
 
   &__credit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-family: var(--font-body);
     font-size: 0.75rem;
     color: var(--muted);
-  }
-
-  &__link {
-    color: var(--muted2);
     text-decoration: none;
     transition: color 0.15s;
 
     &:hover {
       color: var(--accent);
+    }
+  }
+
+  &__logo {
+    height: 20px;
+    width: auto;
+    border-radius: 3px;
+    opacity: 0.75;
+    transition: opacity 0.15s;
+
+    .footer__credit:hover & {
+      opacity: 1;
     }
   }
 }
