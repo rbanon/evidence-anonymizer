@@ -1,4 +1,4 @@
-// ─── Design tokens ────────────────────────────────────────────
+// ─── Dark theme (default) ─────────────────────────────────────
 :root {
   --bg: #080d18;
   --surface: #0f1623;
@@ -20,6 +20,26 @@
   --font-display: 'Crimson Pro', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+// ─── Light theme ──────────────────────────────────────────────
+.theme-light {
+  --bg: #faf8f5;
+  --surface: #f3f0eb;
+  --surface2: #e9e4db;
+  --border: #d4c9b8;
+  --border2: #c4b8a6;
+  --text: #2a1f0e;
+  --muted: #6b5c42;
+  --muted2: #8a7560;
+  --accent: #c4780e;
+  --accent-dim: rgba(196, 120, 14, 0.12);
+  --accent-glow: rgba(196, 120, 14, 0.25);
+  --blue: #2b6cb0;
+  --blue-dim: rgba(43, 108, 176, 0.1);
+  --green: #2d8a6a;
+  --green-dim: rgba(45, 138, 106, 0.1);
+  --red: #c53030;
 }
 
 // ─── Reset & base ─────────────────────────────────────────────

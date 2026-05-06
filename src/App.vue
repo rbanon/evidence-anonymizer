@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import ConfigPanel from '@/components/ConfigPanel.vue'
 import ReportPreview from '@/components/ReportPreview.vue'
 import type { ReportConfig, ReportData, Repository, Commit, LoadingState, FetchProgress } from '@/types'
@@ -167,21 +169,24 @@ function handleCloseModal() {
 
 <template>
   <div class="app-layout">
-    <div class="sidebar no-print">
-      <ConfigPanel
-        :config="config"
-        :is-loading="loadingState === 'loading'"
-        @update:config="config = $event"
-        @generate="handleGenerate"
-      />
-    </div>
-    <div class="main-panel">
-      <ReportPreview
-        :report="report"
-        :loading-state="loadingState"
-        :error="error"
-        :progress="progress"
-      />
+    <AppHeader class="no-print" />
+    <div class="content-area">
+      <div class="sidebar no-print">
+        <ConfigPanel
+          :config="config"
+          :is-loading="loadingState === 'loading'"
+          @update:config="config = $event"
+          @generate="handleGenerate"
+        />
+      </div>
+      <div class="main-panel">
+        <ReportPreview
+          :report="report"
+          :loading-state="loadingState"
+          :error="error"
+          :progress="progress"
+        />
+      </div>
     </div>
 
     <Teleport to="body">
@@ -227,13 +232,21 @@ function handleCloseModal() {
         </div>
       </div>
     </Teleport>
+    <AppFooter class="no-print" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .app-layout {
   display: flex;
+  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+}
+
+.content-area {
+  display: flex;
+  flex: 1;
   overflow: hidden;
 }
 
