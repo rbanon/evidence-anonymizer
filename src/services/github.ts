@@ -1,4 +1,4 @@
-import { Repository, Commit, FetchProgress } from '@/types';
+import type { Repository, Commit, FetchProgress } from '@/types';
 
 const BASE = 'https://api.github.com';
 
@@ -102,10 +102,11 @@ export async function fetchCommits(
     until?: string;
     authors?: string[];
     token?: string;
+    fetchDetails?: boolean;
     onProgress?: (p: FetchProgress) => void;
   },
 ): Promise<Commit[]> {
-  const { since, until, authors, token, onProgress } = opts;
+  const { since, until, authors, token, fetchDetails = false, onProgress } = opts;
 
   const allCommits: GHCommit[] = [];
   let page = 1;
@@ -143,11 +144,16 @@ export async function fetchCommits(
     });
   }
 
-  onProgress?.({ step: 'Loading commit details…', current: 0, total: filtered.length });
+  if (!fetchDetails) {
+    return filtered.map(mapCommit);
+  }
 
-  // Fetch detailed stats for each commit (up to 50 to respect rate limits)
+  // Fetch per-commit detail (stats + files) — only when the report needs them.
+  // Capped at 50 to keep API usage reasonable.
   const withDetails: Commit[] = [];
   const limit = Math.min(filtered.length, 50);
+
+  onProgress?.({ step: 'Loading commit details…', current: 0, total: limit });
 
   for (let i = 0; i < filtered.length; i++) {
     const raw = filtered[i];

@@ -1,11 +1,14 @@
-import { Commit, ReportConfig, ReportData, CommitGroup } from '@/types';
-import { getDateKey, formatDateGroup } from '@/utils/dates';
+import type { Commit, Repository, ReportConfig, ReportData, CommitGroup } from '@/types';
+import { getDateKey } from '@/utils/dates';
 import { anonymizeCommits } from './anonymizer';
 
-export function buildReport(commits: Commit[], config: ReportConfig): ReportData {
+export function buildReport(
+  commits: Commit[],
+  config: ReportConfig,
+  repositories: Repository[],
+): ReportData {
   const anonymized = anonymizeCommits(commits, config.rules, config.options);
 
-  // Group by day
   const groupMap = new Map<string, Commit[]>();
   for (const commit of anonymized) {
     const key = getDateKey(commit.author.date);
@@ -30,6 +33,7 @@ export function buildReport(commits: Commit[], config: ReportConfig): ReportData
   return {
     generatedAt: new Date().toISOString(),
     config,
+    repositories,
     commits: anonymized,
     groups,
     totalCommits: anonymized.length,

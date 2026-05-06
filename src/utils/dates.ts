@@ -1,4 +1,4 @@
-import { format, parseISO, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 export function formatDate(dateStr: string): string {
   try {
@@ -26,17 +26,6 @@ export function formatDateGroup(dateStr: string): string {
 
 export function toISODateString(date: Date): string {
   return format(date, 'yyyy-MM-dd');
-}
-
-export function isInRange(dateStr: string, from: string, to: string): boolean {
-  try {
-    const date = parseISO(dateStr);
-    const start = startOfDay(parseISO(from));
-    const end = endOfDay(parseISO(to));
-    return isWithinInterval(date, { start, end });
-  } catch {
-    return false;
-  }
 }
 
 export function getDateKey(dateStr: string): string {

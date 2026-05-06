@@ -27,6 +27,7 @@ export interface Commit {
   message: string;
   author: CommitAuthor;
   htmlUrl: string;
+  repoFullName?: string;
   files?: CommitFile[];
   stats?: {
     additions: number;
@@ -43,24 +44,31 @@ export interface AnonymizationRule {
   enabled: boolean;
 }
 
+export type Platform = 'github' | 'bitbucket-server' | 'gitlab';
+
 export interface ReportOptions {
   showHashes: boolean;
   showFullHashes: boolean;
   showLinks: boolean;
   showFiles: boolean;
   showStats: boolean;
-  groupByDay: boolean;
-  repoLabel: string;
+  layout: 'flat' | 'day' | 'repo';
+  reportTitle: string;
   anonymizeEmails: boolean;
+  splitByAuthor: boolean;
 }
 
 export interface ReportConfig {
-  repository: Repository | null;
+  repositories: string[];
   dateFrom: string;
   dateTo: string;
   authors: string[];
   rules: AnonymizationRule[];
   options: ReportOptions;
+  platform: Platform;
+  serverUrl?: string;
+  username?: string;
+  token?: string;
 }
 
 export interface CommitGroup {
@@ -71,6 +79,7 @@ export interface CommitGroup {
 export interface ReportData {
   generatedAt: string;
   config: ReportConfig;
+  repositories: Repository[];
   commits: Commit[];
   groups: CommitGroup[];
   totalCommits: number;
