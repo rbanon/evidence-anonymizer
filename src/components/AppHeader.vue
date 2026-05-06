@@ -39,12 +39,8 @@ function setLocale(lang: 'en' | 'es') {
 
 <style lang="scss" scoped>
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
   background-color: var(--surface);
   border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(8px);
   flex-shrink: 0;
 
   &__inner {
