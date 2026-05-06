@@ -7,7 +7,7 @@
         rel="noopener noreferrer"
         class="footer__credit"
       >
-        <img src="@/assets/img/rb-logo.jpg" alt="RB" class="footer__logo" />
+        <img :src="logo" alt="RB" class="footer__logo" />
         <span>{{ t('footer.builtBy') }} {{ t('footer.author') }}</span>
       </a>
     </div>
@@ -16,8 +16,14 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { useTheme } from '@/composables/useTheme'
+import logoWhite from '@/assets/svg/rb-logo-white.svg'
+import logoBlack from '@/assets/svg/rb-logo-black.svg'
+import { computed } from 'vue'
 
 const { t } = useI18n()
+const { theme } = useTheme()
+const logo = computed(() => theme.value === 'dark' ? logoWhite : logoBlack)
 </script>
 
 <style lang="scss" scoped>
