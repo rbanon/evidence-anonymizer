@@ -34,20 +34,3 @@ export function anonymizeCommits(
   return commits.map((c) => anonymizeCommit(c, rules, options));
 }
 
-export function countTotalSubstitutions(
-  original: Commit[],
-  anonymized: Commit[],
-  rules: AnonymizationRule[],
-): number {
-  if (rules.filter((r) => r.enabled).length === 0) return 0;
-
-  let count = 0;
-  for (let i = 0; i < original.length; i++) {
-    const orig = original[i];
-    const anon = anonymized[i];
-    if (orig.message !== anon.message) count++;
-    if (orig.author.name !== anon.author.name) count++;
-    if (orig.author.email !== anon.author.email) count++;
-  }
-  return count;
-}

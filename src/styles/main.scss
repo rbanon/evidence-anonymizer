@@ -1,0 +1,190 @@
+// ─── Design tokens ────────────────────────────────────────────
+:root {
+  --bg: #080d18;
+  --surface: #0f1623;
+  --surface2: #161e2e;
+  --border: #1e2d42;
+  --border2: #243347;
+  --text: #e8edf5;
+  --muted: #6b7e99;
+  --muted2: #8a9bb5;
+  --accent: #e8a020;
+  --accent-dim: rgba(232, 160, 32, 0.12);
+  --accent-glow: rgba(232, 160, 32, 0.25);
+  --blue: #4a8fde;
+  --blue-dim: rgba(74, 143, 222, 0.1);
+  --green: #3eb489;
+  --green-dim: rgba(62, 180, 137, 0.1);
+  --red: #e05252;
+
+  --font-display: 'Crimson Pro', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+// ─── Reset & base ─────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ─── Scrollbars ───────────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+// ─── Form inputs ──────────────────────────────────────────────
+input[type='text'],
+input[type='date'],
+input[type='password'],
+input[type='url'],
+textarea,
+select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type='text']:focus,
+input[type='date']:focus,
+input[type='password']:focus,
+input[type='url']:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+input[type='checkbox'] {
+  accent-color: var(--accent);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+  cursor: pointer;
+}
+
+::placeholder {
+  color: var(--muted);
+}
+
+// ─── Animations ───────────────────────────────────────────────
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+.animate-slide-in {
+  animation: slideIn 0.25s ease-out forwards;
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+.animate-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+// ─── Print styles ─────────────────────────────────────────────
+@page {
+  margin: 1.5cm;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: #1e293b !important;
+    font-size: 11pt;
+    margin: 0;
+  }
+
+  .report-document {
+    background: white !important;
+    color: #1e293b !important;
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  .commit-card {
+    page-break-inside: avoid;
+  }
+
+  .day-group {
+    page-break-inside: avoid;
+  }
+}

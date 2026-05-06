@@ -39,20 +39,49 @@ export function applyAnonymizationWithEmailMask(
   return result;
 }
 
-export function parseRepoUrl(input: string): { owner: string; repo: string } | null {
-  const trimmed = input.trim().replace(/\/$/, '');
+export function parseRepoInput(
+  input: string,
+  platform: 'github' | 'bitbucket-server' | 'gitlab',
+  serverUrl?: string,
+): { owner: string; repo: string } | null {
+  const trimmed = input.trim().replace(/\.git$/, '').replace(/\/$/, '');
 
-  const githubUrl = /github\.com\/([^/]+)\/([^/]+)/;
-  const shortForm = /^([a-zA-Z0-9_.\-]+)\/([a-zA-Z0-9_.\-]+)$/;
-
-  const urlMatch = trimmed.match(githubUrl);
-  if (urlMatch) {
-    return { owner: urlMatch[1], repo: urlMatch[2].replace(/\.git$/, '') };
+  if (platform === 'github') {
+    const urlMatch = trimmed.match(/github\.com\/([^/]+)\/([^/]+)/);
+    if (urlMatch) return { owner: urlMatch[1], repo: urlMatch[2] };
+    const shortMatch = trimmed.match(/^([a-zA-Z0-9_.\-]+)\/([a-zA-Z0-9_.\-]+)$/);
+    if (shortMatch) return { owner: shortMatch[1], repo: shortMatch[2] };
+    return null;
   }
 
-  const shortMatch = trimmed.match(shortForm);
-  if (shortMatch) {
-    return { owner: shortMatch[1], repo: shortMatch[2] };
+  if (platform === 'bitbucket-server') {
+    // Full URL: https://bitbucket.company.com/scm/PROJECT/repo
+    const scmMatch = trimmed.match(/\/scm\/([^/]+)\/([^/]+)$/);
+    if (scmMatch) return { owner: scmMatch[1], repo: scmMatch[2] };
+    // Short form: PROJECT/repo
+    const shortMatch = trimmed.match(/^([a-zA-Z0-9_.\-]+)\/([a-zA-Z0-9_.\-]+)$/);
+    if (shortMatch) return { owner: shortMatch[1], repo: shortMatch[2] };
+    return null;
+  }
+
+  if (platform === 'gitlab') {
+    // Full URL (any hostname): extract path after domain
+    if (trimmed.startsWith('http')) {
+      const pathMatch = trimmed.match(/^https?:\/\/[^/]+\/(.+)/);
+      if (pathMatch) {
+        const parts = pathMatch[1].split('/').filter(Boolean);
+        if (parts.length >= 2) {
+          return { owner: parts.slice(0, -1).join('/'), repo: parts[parts.length - 1] };
+        }
+      }
+      return null;
+    }
+    // Short form: namespace/repo or namespace/subgroup/repo
+    const parts = trimmed.split('/').filter(Boolean);
+    if (parts.length >= 2) {
+      return { owner: parts.slice(0, -1).join('/'), repo: parts[parts.length - 1] };
+    }
+    return null;
   }
 
   return null;
@@ -62,22 +91,3 @@ export function generateId(): string {
   return Math.random().toString(36).slice(2, 9);
 }
 
-export function truncate(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + '…';
-}
-
-export function countAnonymizations(original: string, anonymized: string): number {
-  if (original === anonymized) return 0;
-  let count = 0;
-  let i = 0;
-  while (i < original.length) {
-    if (original[i] !== anonymized[i]) {
-      count++;
-      while (i < original.length && original[i] !== anonymized[i]) i++;
-    } else {
-      i++;
-    }
-  }
-  return count;
-}

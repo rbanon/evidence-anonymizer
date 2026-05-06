@@ -13,9 +13,11 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
+# next.js (removed)
+/.next
+
+# vite
+/dist
 
 # production
 /build
@@ -39,3 +41,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude files
+.claude
+CLAUDE.md
+AGENTS.md
+
+# Reference material
+IDI/
