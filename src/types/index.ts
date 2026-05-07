@@ -44,7 +44,7 @@ export interface AnonymizationRule {
   enabled: boolean;
 }
 
-export type Platform = 'github' | 'bitbucket-server' | 'gitlab';
+export type Platform = 'github' | 'github-enterprise' | 'bitbucket-server' | 'bitbucket-cloud' | 'gitlab';
 
 export interface ReportOptions {
   showHashes: boolean;

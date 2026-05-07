@@ -39,8 +39,8 @@ function setLocale(lang: 'en' | 'es') {
 
 <style lang="scss" scoped>
 .header {
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 
   &__inner {
@@ -62,7 +62,7 @@ function setLocale(lang: 'en' | 'es') {
     font-family: var(--font-display);
     font-size: 20px;
     font-weight: 600;
-    color: var(--text);
+    color: var(--text-primary);
     letter-spacing: -0.02em;
     line-height: 1.2;
     margin: 0;
@@ -75,7 +75,7 @@ function setLocale(lang: 'en' | 'es') {
   &__subtitle {
     font-family: var(--font-body);
     font-size: 0.72rem;
-    color: var(--muted);
+    color: var(--text-secondary);
     line-height: 1.2;
     margin: 0;
   }
@@ -96,7 +96,7 @@ function setLocale(lang: 'en' | 'es') {
 .lang-btn {
   background: none;
   border: none;
-  color: var(--muted);
+  color: var(--text-secondary);
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 600;
@@ -110,19 +110,19 @@ function setLocale(lang: 'en' | 'es') {
   }
 
   &:hover {
-    color: var(--text);
+    color: var(--text-primary);
   }
 }
 
 .lang-divider {
-  color: var(--border2);
+  color: var(--border-color-2);
   font-size: 0.75rem;
 }
 
 .theme-btn {
   background: none;
-  border: 1px solid var(--border);
-  color: var(--text);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   cursor: pointer;
   padding: 0.4rem;
   border-radius: 6px;

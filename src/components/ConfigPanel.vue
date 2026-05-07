@@ -98,7 +98,9 @@ function handlePlatformChange(e: Event) {
             type="text"
             :placeholder="
               config.platform === 'bitbucket-server' ? t('panel.repos.placeholderBitbucket') :
+              config.platform === 'bitbucket-cloud' ? t('panel.repos.placeholderBitbucketCloud') :
               config.platform === 'gitlab' ? t('panel.repos.placeholderGitlab') :
+              config.platform === 'github-enterprise' ? t('panel.repos.placeholderGithubEnterprise') :
               t('panel.repos.placeholderGithub')
             "
             v-model="repoInput"
@@ -326,9 +328,31 @@ function handlePlatformChange(e: Event) {
         <div class="field-label">{{ t('panel.connection.platform') }}</div>
         <select style="width: 100%; margin-bottom: 12px" :value="config.platform" @change="handlePlatformChange">
           <option value="github">GitHub</option>
+          <option value="github-enterprise">GitHub Enterprise Server</option>
           <option value="bitbucket-server">Bitbucket Server</option>
+          <option value="bitbucket-cloud">Bitbucket Cloud</option>
           <option value="gitlab">GitLab</option>
         </select>
+
+        <template v-if="config.platform === 'github-enterprise'">
+          <div class="field-label">{{ t('panel.connection.serverUrl') }}</div>
+          <input
+            type="url"
+            placeholder="https://github.company.com"
+            :value="config.serverUrl ?? ''"
+            style="margin-bottom: 8px"
+            @input="(e) => emit('update:config', { ...config, serverUrl: (e.target as HTMLInputElement).value })"
+          />
+          <p class="hint" style="margin-bottom: 8px">{{ t('panel.connection.githubEnterpriseUrlHint') }}</p>
+          <div class="field-label">{{ t('panel.connection.token') }}</div>
+          <input
+            type="password"
+            placeholder="ghp_xxxxxxxxxxxx"
+            :value="config.token ?? ''"
+            @input="(e) => emit('update:config', { ...config, token: (e.target as HTMLInputElement).value })"
+          />
+          <p class="hint">{{ t('panel.connection.credentialsHint') }}</p>
+        </template>
 
         <template v-if="config.platform === 'bitbucket-server'">
           <div class="field-label">{{ t('panel.connection.serverUrl') }}</div>
@@ -355,6 +379,25 @@ function handlePlatformChange(e: Event) {
             @input="(e) => emit('update:config', { ...config, token: (e.target as HTMLInputElement).value })"
           />
           <p class="hint">{{ t('panel.connection.credentialsHint') }}</p>
+        </template>
+
+        <template v-if="config.platform === 'bitbucket-cloud'">
+          <div class="field-label">{{ t('panel.connection.username') }}</div>
+          <input
+            type="text"
+            placeholder="workspace-username"
+            :value="config.username ?? ''"
+            style="margin-bottom: 8px"
+            @input="(e) => emit('update:config', { ...config, username: (e.target as HTMLInputElement).value })"
+          />
+          <div class="field-label">{{ t('panel.connection.appPassword') }}</div>
+          <input
+            type="password"
+            placeholder="••••••••"
+            :value="config.token ?? ''"
+            @input="(e) => emit('update:config', { ...config, token: (e.target as HTMLInputElement).value })"
+          />
+          <p class="hint">{{ t('panel.connection.appPasswordHint') }}</p>
         </template>
 
         <template v-if="config.platform === 'gitlab'">
@@ -424,8 +467,8 @@ function handlePlatformChange(e: Event) {
 
 <style lang="scss" scoped>
 .panel {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -434,7 +477,7 @@ function handlePlatformChange(e: Event) {
 // ─── Header ───────────────────────────────────────────────────
 .panel-header {
   padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
@@ -442,7 +485,7 @@ function handlePlatformChange(e: Event) {
   font-family: var(--font-display);
   font-size: 20px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -454,7 +497,7 @@ function handlePlatformChange(e: Event) {
 .panel-subtitle {
   margin-top: 3px;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--text-secondary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -476,32 +519,32 @@ function handlePlatformChange(e: Event) {
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text-secondary);
   margin-bottom: 10px;
 }
 
 .divider {
   height: 1px;
-  background: var(--border);
+  background: var(--border-color);
   margin: 0 24px;
 }
 
 .field-label {
   font-size: 12px;
-  color: var(--muted2);
+  color: var(--text-tertiary);
   margin-bottom: 5px;
   font-weight: 500;
 }
 
 .sub-label {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .hint {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--text-secondary);
   margin-top: 5px;
   margin-bottom: 0;
 }
@@ -569,7 +612,7 @@ function handlePlatformChange(e: Event) {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--muted);
+  color: var(--text-secondary);
   padding: 0;
   font-size: 14px;
   line-height: 1;
@@ -598,7 +641,7 @@ function handlePlatformChange(e: Event) {
   margin-bottom: 8px;
   cursor: pointer;
   font-size: 13px;
-  color: var(--muted2);
+  color: var(--text-tertiary);
 }
 
 // ─── Anonymization rules ──────────────────────────────────────
@@ -619,9 +662,9 @@ function handlePlatformChange(e: Event) {
 .rules-empty {
   padding: 14px;
   text-align: center;
-  color: var(--muted);
+  color: var(--text-secondary);
   font-size: 12px;
-  border: 1px dashed var(--border);
+  border: 1px dashed var(--border-color);
   border-radius: 6px;
 }
 
@@ -632,8 +675,8 @@ function handlePlatformChange(e: Event) {
 }
 
 .rule-row {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color-2);
   border-radius: 6px;
   padding: 8px 10px;
   opacity: 1;
@@ -641,7 +684,7 @@ function handlePlatformChange(e: Event) {
 
   &--disabled {
     opacity: 0.5;
-    border-color: var(--border);
+    border-color: var(--border-color);
   }
 }
 
@@ -655,7 +698,7 @@ function handlePlatformChange(e: Event) {
 .rule-original {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--red);
+  color: var(--danger);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -672,7 +715,7 @@ function handlePlatformChange(e: Event) {
 .rule-replacement {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--green);
+  color: var(--success);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -683,7 +726,7 @@ function handlePlatformChange(e: Event) {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--muted);
+  color: var(--text-secondary);
   padding: 0 2px;
   font-size: 15px;
   line-height: 1;
@@ -695,7 +738,7 @@ function handlePlatformChange(e: Event) {
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--text-secondary);
   cursor: pointer;
   padding-left: 20px;
 }
@@ -703,7 +746,7 @@ function handlePlatformChange(e: Event) {
 // ─── Footer / Generate button ─────────────────────────────────
 .panel-footer {
   padding: 14px 24px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
@@ -725,8 +768,8 @@ function handlePlatformChange(e: Event) {
   gap: 8px;
 
   &--loading {
-    background: var(--surface2);
-    color: var(--muted);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
     cursor: not-allowed;
   }
 }

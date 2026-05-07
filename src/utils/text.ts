@@ -41,7 +41,7 @@ export function applyAnonymizationWithEmailMask(
 
 export function parseRepoInput(
   input: string,
-  platform: 'github' | 'bitbucket-server' | 'gitlab',
+  platform: 'github' | 'github-enterprise' | 'bitbucket-server' | 'bitbucket-cloud' | 'gitlab',
   serverUrl?: string,
 ): { owner: string; repo: string } | null {
   const trimmed = input.trim().replace(/\.git$/, '').replace(/\/$/, '');
@@ -54,11 +54,33 @@ export function parseRepoInput(
     return null;
   }
 
+  if (platform === 'github-enterprise') {
+    // Full URL from any GHE hostname
+    if (trimmed.startsWith('http')) {
+      const pathMatch = trimmed.match(/^https?:\/\/[^/]+\/([^/]+)\/([^/]+)/);
+      if (pathMatch) return { owner: pathMatch[1], repo: pathMatch[2] };
+      return null;
+    }
+    const shortMatch = trimmed.match(/^([a-zA-Z0-9_.\-]+)\/([a-zA-Z0-9_.\-]+)$/);
+    if (shortMatch) return { owner: shortMatch[1], repo: shortMatch[2] };
+    return null;
+  }
+
   if (platform === 'bitbucket-server') {
     // Full URL: https://bitbucket.company.com/scm/PROJECT/repo
     const scmMatch = trimmed.match(/\/scm\/([^/]+)\/([^/]+)$/);
     if (scmMatch) return { owner: scmMatch[1], repo: scmMatch[2] };
     // Short form: PROJECT/repo
+    const shortMatch = trimmed.match(/^([a-zA-Z0-9_.\-]+)\/([a-zA-Z0-9_.\-]+)$/);
+    if (shortMatch) return { owner: shortMatch[1], repo: shortMatch[2] };
+    return null;
+  }
+
+  if (platform === 'bitbucket-cloud') {
+    // Full URL: https://bitbucket.org/workspace/repo
+    const urlMatch = trimmed.match(/bitbucket\.org\/([^/]+)\/([^/]+)/);
+    if (urlMatch) return { owner: urlMatch[1], repo: urlMatch[2] };
+    // Short form: workspace/repo
     const shortMatch = trimmed.match(/^([a-zA-Z0-9_.\-]+)\/([a-zA-Z0-9_.\-]+)$/);
     if (shortMatch) return { owner: shortMatch[1], repo: shortMatch[2] };
     return null;

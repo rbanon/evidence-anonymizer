@@ -29,8 +29,8 @@ const logo = computed(() => theme.value === 'dark' ? logoWhite : logoBlack)
 <style lang="scss" scoped>
 .footer {
   flex-shrink: 0;
-  background-color: var(--surface);
-  border-top: 1px solid var(--border);
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
 
   &__inner {
     display: flex;
@@ -46,7 +46,7 @@ const logo = computed(() => theme.value === 'dark' ? logoWhite : logoBlack)
     gap: 8px;
     font-family: var(--font-body);
     font-size: 0.75rem;
-    color: var(--muted);
+    color: var(--text-secondary);
     text-decoration: none;
     transition: color 0.15s;
 

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { ReportData, LoadingState, FetchProgress, Commit, CommitGroup, ReportOptions } from '@/types'
 import { formatDate, formatDateTime, formatDateGroup, getDateKey } from '@/utils/dates'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   report: ReportData | null
@@ -124,14 +127,14 @@ const MAX_FILES = 8
   <div v-if="loadingState === 'loading'" class="center-view">
     <div
       class="animate-spin"
-      style="width: 40px; height: 40px; border: 3px solid var(--border2); border-top-color: var(--accent); border-radius: 50%;"
+      style="width: 40px; height: 40px; border: 3px solid var(--border-color-2); border-top-color: var(--accent); border-radius: 50%;"
     />
     <div style="text-align: center">
-      <div style="font-size: 15px; color: var(--text); margin-bottom: 6px">
-        {{ progress?.step ?? 'Connecting to GitHub…' }}
+      <div style="font-size: 15px; color: var(--text-primary); margin-bottom: 6px">
+        {{ progress?.step ?? t('preview.connecting') }}
       </div>
-      <div v-if="progress && progress.total > 1" style="font-size: 13px; color: var(--muted)">
-        Repository {{ progress.current }} of {{ progress.total }}
+      <div v-if="progress && progress.total > 1" style="font-size: 13px; color: var(--text-secondary)">
+        {{ t('preview.repoProgress', { current: progress.current, total: progress.total }) }}
       </div>
     </div>
   </div>
@@ -140,15 +143,15 @@ const MAX_FILES = 8
   <div v-else-if="loadingState === 'error' && error" class="center-view">
     <div class="error-icon">✕</div>
     <div>
-      <div style="font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 6px">
-        Could not fetch report
+      <div style="font-size: 16px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px">
+        {{ t('preview.errorTitle') }}
       </div>
-      <div style="font-size: 13px; color: var(--muted2); max-width: 400px; line-height: 1.6">
+      <div style="font-size: 13px; color: var(--text-tertiary); max-width: 400px; line-height: 1.6">
         {{ error }}
       </div>
     </div>
-    <div style="font-size: 12px; color: var(--muted)">
-      Check the repository URL and date range. Add a GitHub token if you hit the rate limit.
+    <div style="font-size: 12px; color: var(--text-secondary)">
+      {{ t('preview.errorHint') }}
     </div>
   </div>
 
@@ -156,30 +159,28 @@ const MAX_FILES = 8
   <div v-else-if="!report" class="center-view" style="gap: 32px;">
     <div class="empty-icon">◈</div>
     <div>
-      <div class="empty-title">Ready to generate</div>
-      <div class="empty-desc">
-        Configure your repository, date range and authors in the panel on the left, then click
-        <span style="color: var(--accent)">Generate Evidence Report</span>.
-      </div>
+      <div class="empty-title">{{ t('preview.emptyTitle') }}</div>
+      <div class="empty-desc">{{ t('preview.emptyDesc') }}</div>
     </div>
     <div class="steps-list">
       <div class="step-item">
         <span class="step-icon">⬡</span>
-        Add one or more public GitHub repositories
+        {{ t('preview.step1') }}
       </div>
       <div class="step-item">
         <span class="step-icon">◎</span>
-        Set a date range and optional author filter
+        {{ t('preview.step2') }}
       </div>
       <div class="step-item">
         <span class="step-icon">◈</span>
-        Add anonymization rules to redact sensitive text
+        {{ t('preview.step3') }}
       </div>
       <div class="step-item">
         <span class="step-icon">↓</span>
-        Download the result as a PDF
+        {{ t('preview.step4') }}
       </div>
     </div>
+    <div class="limit-note">{{ t('preview.limitNote') }}</div>
   </div>
 
   <!-- Report -->
@@ -188,13 +189,13 @@ const MAX_FILES = 8
     <div class="action-bar no-print">
       <div class="stat-chips">
         <span class="stat-chip" style="--chip-color: var(--accent)">
-          {{ report.totalCommits }} commit{{ report.totalCommits !== 1 ? 's' : '' }}
+          {{ report.totalCommits }} {{ report.totalCommits !== 1 ? t('doc.commitPlural') : t('doc.commitSingular') }}
         </span>
         <span v-if="report.repositories.length > 0" class="stat-chip" style="--chip-color: var(--blue)">
-          {{ report.repositories.length }} repo{{ report.repositories.length !== 1 ? 's' : '' }}
+          {{ report.repositories.length }} {{ report.repositories.length !== 1 ? t('report.repoPlural') : t('report.repoSingular') }}
         </span>
-        <span v-if="report.authors.length > 0" class="stat-chip" style="--chip-color: var(--green)">
-          {{ report.authors.length }} author{{ report.authors.length !== 1 ? 's' : '' }}
+        <span v-if="report.authors.length > 0" class="stat-chip" style="--chip-color: var(--success)">
+          {{ report.authors.length }} {{ report.authors.length !== 1 ? t('report.authorPlural') : t('report.authorSingular') }}
         </span>
       </div>
 
@@ -209,8 +210,8 @@ const MAX_FILES = 8
             ↓ {{ author }}
           </button>
         </template>
-        <button v-else class="pdf-btn" @click="handlePrintAll">
-          ↓ Download PDF
+        <button v-if="!report.config.options.splitByAuthor" class="pdf-btn" @click="handlePrintAll">
+          {{ t('report.downloadPdf') }}
         </button>
       </div>
     </div>
@@ -222,19 +223,19 @@ const MAX_FILES = 8
     >
       <!-- Doc header -->
       <div class="doc-header">
-        <div class="doc-eyebrow">Evidence Report · GitHub Activity</div>
-        <div class="doc-title">{{ displayReport!.config.options.reportTitle || 'GitHub Activity Report' }}</div>
+        <div class="doc-eyebrow">{{ t('doc.eyebrow') }}</div>
+        <div class="doc-title">{{ displayReport!.config.options.reportTitle || t('doc.defaultTitle') }}</div>
         <div class="doc-meta">
           <div class="meta-item">
-            <span class="meta-label">Period:</span>
+            <span class="meta-label">{{ t('doc.period') }}</span>
             <span class="meta-value">{{ formatDate(displayReport!.config.dateFrom) }} – {{ formatDate(displayReport!.config.dateTo) }}</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">Generated:</span>
+            <span class="meta-label">{{ t('doc.generated') }}</span>
             <span class="meta-value">{{ formatDate(displayReport!.generatedAt) }}</span>
           </div>
           <div v-if="displayReport!.config.authors.length > 0" class="meta-item">
-            <span class="meta-label">Authors:</span>
+            <span class="meta-label">{{ t('doc.authorsLabel') }}</span>
             <span class="meta-value">{{ displayReport!.config.authors.join(', ') }}</span>
           </div>
         </div>
@@ -256,32 +257,32 @@ const MAX_FILES = 8
       <div class="summary-grid">
         <div class="summary-cell">
           <div class="summary-value">{{ displayReport!.totalCommits }}</div>
-          <div class="summary-key">Commits</div>
+          <div class="summary-key">{{ t('doc.summaryCommits') }}</div>
         </div>
         <div class="summary-cell">
           <div class="summary-value">{{ displayReport!.authors.length }}</div>
-          <div class="summary-key">Authors</div>
+          <div class="summary-key">{{ t('doc.summaryAuthors') }}</div>
         </div>
         <div class="summary-cell">
           <div class="summary-value" style="color: #16a34a">
             {{ displayReport!.totalAdditions > 0 ? `+${displayReport!.totalAdditions.toLocaleString()}` : '—' }}
           </div>
-          <div class="summary-key">Additions</div>
+          <div class="summary-key">{{ t('doc.summaryAdditions') }}</div>
         </div>
         <div class="summary-cell summary-cell--last">
           <div class="summary-value" style="color: #dc2626">
             {{ displayReport!.totalDeletions > 0 ? `-${displayReport!.totalDeletions.toLocaleString()}` : '—' }}
           </div>
-          <div class="summary-key">Deletions</div>
+          <div class="summary-key">{{ t('doc.summaryDeletions') }}</div>
         </div>
       </div>
 
       <!-- Evidence section -->
       <div v-if="displayReport!.totalCommits === 0" class="empty-report">
-        No commits found for the selected date range and author filter.
+        {{ t('doc.noCommits') }}
       </div>
       <div v-else>
-        <div class="evidence-header">Commit Evidence</div>
+        <div class="evidence-header">{{ t('doc.commitEvidence') }}</div>
 
         <!-- Day layout -->
         <template v-if="displayReport!.config.options.layout === 'day'">
@@ -292,7 +293,7 @@ const MAX_FILES = 8
           >
             <div class="group-header group-header--day">
               {{ formatDateGroup(group.date) }}
-              <span class="group-count">{{ group.commits.length }} commit{{ group.commits.length !== 1 ? 's' : '' }}</span>
+              <span class="group-count">{{ group.commits.length }} {{ group.commits.length !== 1 ? t('doc.commitPlural') : t('doc.commitSingular') }}</span>
             </div>
             <div
               v-for="commit in group.commits"
@@ -324,7 +325,7 @@ const MAX_FILES = 8
                 </template>
                 <template v-if="displayReport!.config.options.showLinks">
                   <span class="meta-dot">·</span>
-                  <a :href="commit.htmlUrl" target="_blank" rel="noopener noreferrer" class="commit-link">View on GitHub ↗</a>
+                  <a :href="commit.htmlUrl" target="_blank" rel="noopener noreferrer" class="commit-link">{{ t('doc.viewOnGitHub') }}</a>
                 </template>
               </div>
               <div v-if="displayReport!.config.options.showFiles && (commit.files ?? []).length > 0" class="file-list">
@@ -339,7 +340,7 @@ const MAX_FILES = 8
                   }"
                 >{{ f.filename }}</span>
                 <span v-if="(commit.files ?? []).length - MAX_FILES > 0" class="file-more">
-                  +{{ (commit.files ?? []).length - MAX_FILES }} more
+                  +{{ (commit.files ?? []).length - MAX_FILES }} {{ t('doc.moreFiles') }}
                 </span>
               </div>
             </div>
@@ -355,7 +356,7 @@ const MAX_FILES = 8
           >
             <div class="group-header group-header--repo">
               ⬡ {{ group.name }}
-              <span class="group-count group-count--repo">{{ group.commits.length }} commit{{ group.commits.length !== 1 ? 's' : '' }}</span>
+              <span class="group-count group-count--repo">{{ group.commits.length }} {{ group.commits.length !== 1 ? t('doc.commitPlural') : t('doc.commitSingular') }}</span>
             </div>
             <div
               v-for="commit in group.commits"
@@ -386,7 +387,7 @@ const MAX_FILES = 8
                 </template>
                 <template v-if="displayReport!.config.options.showLinks">
                   <span class="meta-dot">·</span>
-                  <a :href="commit.htmlUrl" target="_blank" rel="noopener noreferrer" class="commit-link">View on GitHub ↗</a>
+                  <a :href="commit.htmlUrl" target="_blank" rel="noopener noreferrer" class="commit-link">{{ t('doc.viewOnGitHub') }}</a>
                 </template>
               </div>
               <div v-if="displayReport!.config.options.showFiles && (commit.files ?? []).length > 0" class="file-list">
@@ -401,7 +402,7 @@ const MAX_FILES = 8
                   }"
                 >{{ f.filename }}</span>
                 <span v-if="(commit.files ?? []).length - MAX_FILES > 0" class="file-more">
-                  +{{ (commit.files ?? []).length - MAX_FILES }} more
+                  +{{ (commit.files ?? []).length - MAX_FILES }} {{ t('doc.moreFiles') }}
                 </span>
               </div>
             </div>
@@ -439,7 +440,7 @@ const MAX_FILES = 8
               </template>
               <template v-if="displayReport!.config.options.showLinks">
                 <span class="meta-dot">·</span>
-                <a :href="commit.htmlUrl" target="_blank" rel="noopener noreferrer" class="commit-link">View on GitHub ↗</a>
+                <a :href="commit.htmlUrl" target="_blank" rel="noopener noreferrer" class="commit-link">{{ t('doc.viewOnGitHub') }}</a>
               </template>
             </div>
             <div v-if="displayReport!.config.options.showFiles && (commit.files ?? []).length > 0" class="file-list">
@@ -454,7 +455,7 @@ const MAX_FILES = 8
                 }"
               >{{ f.filename }}</span>
               <span v-if="(commit.files ?? []).length - MAX_FILES > 0" class="file-more">
-                +{{ (commit.files ?? []).length - MAX_FILES }} more
+                +{{ (commit.files ?? []).length - MAX_FILES }} {{ t('doc.moreFiles') }}
               </span>
             </div>
           </div>
@@ -468,14 +469,14 @@ const MAX_FILES = 8
             v-if="displayReport!.config.rules.some(r => r.enabled) || displayReport!.config.options.anonymizeEmails"
             class="footer-anon-notice"
           >
-            This report may contain anonymized content. Some names, emails or identifiers may have been substituted.
+            {{ t('doc.anonNotice') }}
           </div>
-          <div>Generated by GitHub Evidence Anonymizer on {{ formatDateTime(displayReport!.generatedAt) }}.</div>
+          <div>{{ t('doc.generatedBy', { date: formatDateTime(displayReport!.generatedAt) }) }}</div>
         </div>
         <div class="doc-footer-right">
           <div v-for="r in displayReport!.repositories" :key="r.fullName">{{ r.fullName }}</div>
           <div>{{ formatDate(displayReport!.config.dateFrom) }} – {{ formatDate(displayReport!.config.dateTo) }}</div>
-          <div>{{ displayReport!.totalCommits }} commit{{ displayReport!.totalCommits !== 1 ? 's' : '' }}</div>
+          <div>{{ displayReport!.totalCommits }} {{ displayReport!.totalCommits !== 1 ? t('doc.commitPlural') : t('doc.commitSingular') }}</div>
         </div>
       </div>
     </div>
@@ -490,7 +491,6 @@ const MAX_FILES = 8
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 100vh;
   gap: 20px;
   padding: 40px 24px;
   text-align: center;
@@ -507,7 +507,7 @@ const MAX_FILES = 8
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  color: var(--red);
+  color: var(--danger);
 }
 
 // ─── Empty state ──────────────────────────────────────────────
@@ -527,14 +527,14 @@ const MAX_FILES = 8
   font-family: var(--font-display);
   font-size: 28px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--text-primary);
   margin-bottom: 8px;
   letter-spacing: -0.02em;
 }
 
 .empty-desc {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text-secondary);
   max-width: 360px;
   line-height: 1.7;
 }
@@ -552,11 +552,11 @@ const MAX_FILES = 8
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 13px;
-  color: var(--muted2);
+  color: var(--text-tertiary);
   text-align: left;
 }
 
@@ -564,6 +564,15 @@ const MAX_FILES = 8
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 14px;
+}
+
+.limit-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  max-width: 340px;
+  text-align: center;
+  letter-spacing: 0.01em;
 }
 
 // ─── Report outer ─────────────────────────────────────────────
@@ -580,6 +589,12 @@ const MAX_FILES = 8
   margin-bottom: 20px;
   gap: 16px;
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-primary);
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .stat-chips {
@@ -883,5 +898,31 @@ const MAX_FILES = 8
 .doc-footer-right {
   text-align: right;
   font-family: 'JetBrains Mono', monospace;
+}
+
+@media print {
+  .report-outer {
+    min-height: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  .doc-footer {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .doc-footer-left {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+
+  .doc-footer-right {
+    flex: 0 0 auto;
+    text-align: right;
+  }
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import ConfigPanel from '@/components/ConfigPanel.vue'
@@ -48,6 +49,8 @@ interface PartialFailure {
   safeConfig: ReportConfig
 }
 
+const { t } = useI18n()
+
 const config = ref<ReportConfig>({ ...DEFAULT_CONFIG, options: { ...DEFAULT_CONFIG.options } })
 const report = ref<ReportData | null>(null)
 const loadingState = ref<LoadingState>('idle')
@@ -68,23 +71,37 @@ function finishReport(commits: Commit[], repositories: Repository[], cfg: Report
 
 async function handleGenerate() {
   if (config.value.repositories.length === 0) {
-    error.value = 'Add at least one repository.'
+    error.value = t('errors.addRepo')
     loadingState.value = 'error'
     return
   }
   if (!config.value.dateFrom || !config.value.dateTo) {
-    error.value = 'Please select a valid date range.'
+    error.value = t('errors.dateRange')
     loadingState.value = 'error'
     return
   }
+  if (config.value.platform === 'github-enterprise') {
+    if (!config.value.serverUrl?.trim()) {
+      error.value = t('errors.serverUrlGhe')
+      loadingState.value = 'error'
+      return
+    }
+  }
   if (config.value.platform === 'bitbucket-server') {
     if (!config.value.serverUrl?.trim()) {
-      error.value = 'Server URL is required for Bitbucket Server.'
+      error.value = t('errors.serverUrl')
       loadingState.value = 'error'
       return
     }
     if (!config.value.username?.trim()) {
-      error.value = 'Username is required for Bitbucket Server.'
+      error.value = t('errors.username')
+      loadingState.value = 'error'
+      return
+    }
+  }
+  if (config.value.platform === 'bitbucket-cloud') {
+    if (!config.value.username?.trim()) {
+      error.value = t('errors.usernameCloud')
       loadingState.value = 'error'
       return
     }
@@ -106,12 +123,12 @@ async function handleGenerate() {
 
     const parsed = parseRepoInput(repoInput, config.value.platform, config.value.serverUrl)
     if (!parsed) {
-      failedRepos.push({ input: repoInput, error: 'Invalid repository format.' })
+      failedRepos.push({ input: repoInput, error: t('errors.invalidRepo') })
       continue
     }
 
     progress.value = {
-      step: `Fetching ${parsed.owner}/${parsed.repo}…`,
+      step: t('preview.fetching', { owner: parsed.owner, repo: parsed.repo }),
       current: i + 1,
       total: config.value.repositories.length,
     }
@@ -139,7 +156,7 @@ async function handleGenerate() {
     error.value =
       failedRepos.length === 1
         ? failedRepos[0].error
-        : `All repositories failed:\n${failedRepos.map((f) => `• ${f.input}: ${f.error}`).join('\n')}`
+        : `${t('errors.allFailed')}\n${failedRepos.map((f) => `• ${f.input}: ${f.error}`).join('\n')}`
     loadingState.value = 'error'
     return
   }
@@ -197,14 +214,14 @@ function handleCloseModal() {
       >
         <div class="modal-box">
           <div class="modal-title">
-            {{ partialFailure.failedRepos.length === 1 ? '1 repository' : `${partialFailure.failedRepos.length} repositories` }} could not be accessed
+            {{ partialFailure.failedRepos.length === 1 ? t('modal.titleSingular') : t('modal.titlePlural', { n: partialFailure.failedRepos.length }) }}
           </div>
           <div class="modal-desc">
             <template v-if="partialFailure.repositories.length > 0">
-              You can continue generating the report without {{ partialFailure.failedRepos.length === 1 ? 'it' : 'them' }}, or go back to fix the list.
+              {{ partialFailure.failedRepos.length === 1 ? t('modal.descContinueSingular') : t('modal.descContinuePlural') }}
             </template>
             <template v-else>
-              No repositories could be accessed. Go back and fix the list.
+              {{ t('modal.descNoRepos') }}
             </template>
           </div>
 
@@ -220,13 +237,13 @@ function handleCloseModal() {
           </div>
 
           <div class="modal-actions">
-            <button class="btn-close" @click="handleCloseModal">Close and fix</button>
+            <button class="btn-close" @click="handleCloseModal">{{ t('modal.closeAndFix') }}</button>
             <button
               v-if="partialFailure.repositories.length > 0"
               class="btn-continue"
               @click="handleContinue"
             >
-              Generate without {{ partialFailure.failedRepos.length === 1 ? 'it' : 'them' }}
+              {{ partialFailure.failedRepos.length === 1 ? t('modal.generateWithoutSingular') : t('modal.generateWithoutPlural') }}
             </button>
           </div>
         </div>
@@ -258,7 +275,7 @@ function handleCloseModal() {
 .main-panel {
   flex: 1;
   overflow-y: auto;
-  background: var(--bg);
+  background: var(--bg-primary);
 }
 
 // ─── Modal ────────────────────────────────────────────────────
@@ -274,8 +291,8 @@ function handleCloseModal() {
 }
 
 .modal-box {
-  background: var(--surface);
-  border: 1px solid var(--border2);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color-2);
   border-radius: 12px;
   padding: 28px 32px;
   max-width: 460px;
@@ -286,13 +303,13 @@ function handleCloseModal() {
 .modal-title {
   font-size: 17px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .modal-desc {
   font-size: 13px;
-  color: var(--muted2);
+  color: var(--text-tertiary);
   margin-bottom: 18px;
   line-height: 1.6;
 }
@@ -314,13 +331,13 @@ function handleCloseModal() {
 .modal-failed-input {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--red);
+  color: var(--danger);
   margin-bottom: 3px;
 }
 
 .modal-failed-error {
   font-size: 12px;
-  color: var(--muted);
+  color: var(--text-secondary);
 }
 
 .modal-actions {
@@ -331,9 +348,9 @@ function handleCloseModal() {
 
 .btn-close {
   padding: 9px 18px;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  color: var(--muted2);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color-2);
+  color: var(--text-tertiary);
   border-radius: 7px;
   cursor: pointer;
   font-family: var(--font-body);
@@ -351,5 +368,18 @@ function handleCloseModal() {
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
+}
+</style>
+
+<style lang="scss">
+@media print {
+  .app-layout,
+  .content-area,
+  .main-panel {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    background: white !important;
+  }
 }
 </style>

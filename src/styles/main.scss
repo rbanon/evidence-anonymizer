@@ -1,45 +1,51 @@
 // ─── Dark theme (default) ─────────────────────────────────────
 :root {
-  --bg: #080d18;
-  --surface: #0f1623;
-  --surface2: #161e2e;
-  --border: #1e2d42;
-  --border2: #243347;
-  --text: #e8edf5;
-  --muted: #6b7e99;
-  --muted2: #8a9bb5;
-  --accent: #e8a020;
-  --accent-dim: rgba(232, 160, 32, 0.12);
-  --accent-glow: rgba(232, 160, 32, 0.25);
-  --blue: #4a8fde;
-  --blue-dim: rgba(74, 143, 222, 0.1);
-  --green: #3eb489;
-  --green-dim: rgba(62, 180, 137, 0.1);
-  --red: #e05252;
+  --bg-primary:     #080d18;
+  --bg-secondary:   #0f1623;
+  --bg-tertiary:    #161e2e;
+  --border-color:   #1e2d42;
+  --border-color-2: #243347;
+  --text-primary:   #e8edf5;
+  --text-secondary: #6b7e99;
+  --text-tertiary:  #8a9bb5;
+  --accent:         #e8a020;
+  --accent-hover:   #f0b83a;
+  --accent-dim:     rgba(232, 160, 32, 0.12);
+  --accent-glow:    rgba(232, 160, 32, 0.25);
+  --blue:           #4a8fde;
+  --blue-dim:       rgba(74, 143, 222, 0.1);
+  --success:        #3eb489;
+  --success-dim:    rgba(62, 180, 137, 0.1);
+  --warning:        #e8a020;
+  --danger:         #e05252;
+  --shadow:         0 4px 12px rgba(0, 0, 0, 0.5);
 
   --font-display: 'Crimson Pro', Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-body:    'DM Sans', system-ui, sans-serif;
 }
 
 // ─── Light theme ──────────────────────────────────────────────
 .theme-light {
-  --bg: #faf8f5;
-  --surface: #f3f0eb;
-  --surface2: #e9e4db;
-  --border: #d4c9b8;
-  --border2: #c4b8a6;
-  --text: #2a1f0e;
-  --muted: #6b5c42;
-  --muted2: #8a7560;
-  --accent: #c4780e;
-  --accent-dim: rgba(196, 120, 14, 0.12);
-  --accent-glow: rgba(196, 120, 14, 0.25);
-  --blue: #2b6cb0;
-  --blue-dim: rgba(43, 108, 176, 0.1);
-  --green: #2d8a6a;
-  --green-dim: rgba(45, 138, 106, 0.1);
-  --red: #c53030;
+  --bg-primary:     #faf8f5;
+  --bg-secondary:   #f3f0eb;
+  --bg-tertiary:    #e9e4db;
+  --border-color:   #d4c9b8;
+  --border-color-2: #c4b8a6;
+  --text-primary:   #2a1f0e;
+  --text-secondary: #6b5c42;
+  --text-tertiary:  #8a7560;
+  --accent:         #c4780e;
+  --accent-hover:   #a8650b;
+  --accent-dim:     rgba(196, 120, 14, 0.12);
+  --accent-glow:    rgba(196, 120, 14, 0.25);
+  --blue:           #2b6cb0;
+  --blue-dim:       rgba(43, 108, 176, 0.1);
+  --success:        #2d8a6a;
+  --success-dim:    rgba(45, 138, 106, 0.1);
+  --warning:        #c4780e;
+  --danger:         #c53030;
+  --shadow:         0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 // ─── Reset & base ─────────────────────────────────────────────
@@ -54,10 +60,10 @@ body,
 #app {
   height: 100%;
   overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   margin: 0;
   padding: 0;
@@ -70,14 +76,14 @@ body,
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border2);
+  background: var(--border-color-2);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: var(--text-secondary);
 }
 
 // ─── Form inputs ──────────────────────────────────────────────
@@ -87,9 +93,9 @@ input[type='password'],
 input[type='url'],
 textarea,
 select {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 14px;
   border-radius: 6px;
@@ -122,57 +128,16 @@ input[type='date']::-webkit-calendar-picker-indicator {
 }
 
 ::placeholder {
-  color: var(--muted);
+  color: var(--text-secondary);
 }
 
 // ─── Animations ───────────────────────────────────────────────
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulse-soft {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-.animate-slide-in {
-  animation: slideIn 0.25s ease-out forwards;
-}
-.animate-pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
-}
 .animate-spin {
   animation: spin 0.8s linear infinite;
 }
@@ -187,6 +152,13 @@ input[type='date']::-webkit-calendar-picker-indicator {
     display: none !important;
   }
 
+  html,
+  body,
+  #app {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
   body {
     background: white !important;
     color: #1e293b !important;
@@ -194,7 +166,28 @@ input[type='date']::-webkit-calendar-picker-indicator {
     margin: 0;
   }
 
+  // Dark-theme CSS variables would bleed into the page background;
+  // override them all to light values for print.
+  :root,
+  .theme-light {
+    --bg-primary:     #ffffff;
+    --bg-secondary:   #f8fafc;
+    --bg-tertiary:    #f1f5f9;
+    --text-primary:   #1e293b;
+    --text-secondary: #64748b;
+    --text-tertiary:  #475569;
+    --border-color:   #e2e8f0;
+    --border-color-2: #e2e8f0;
+    --accent:         #c4780e;
+    --blue:           #2b6cb0;
+    --success:        #2d8a6a;
+    --danger:         #c53030;
+  }
+
+  // The document card has `overflow: hidden` as an inline style which clips
+  // content at the page boundary — override it so all pages render fully.
   .report-document {
+    overflow: visible !important;
     background: white !important;
     color: #1e293b !important;
     border: none !important;
@@ -203,11 +196,21 @@ input[type='date']::-webkit-calendar-picker-indicator {
     border-radius: 0 !important;
   }
 
+  // Page-break control — use both syntaxes: `page-break-*` (legacy) and
+  // `break-*` (modern, required by Chromium-based browsers).
   .commit-card {
     page-break-inside: avoid;
+    break-inside: avoid;
   }
 
-  .day-group {
+  .day-group,
+  .repo-group {
     page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .group-header {
+    page-break-after: avoid;
+    break-after: avoid;
   }
 }

@@ -1,15 +1,15 @@
 import type { Repository, Commit, FetchProgress } from '@/types';
 
-const BASE = 'https://api.github.com';
+const DEFAULT_BASE = 'https://api.github.com';
 
-async function ghFetch<T>(path: string, token?: string): Promise<T> {
+async function ghFetch<T>(path: string, token?: string, baseUrl: string = DEFAULT_BASE): Promise<T> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
   };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE}${path}`, { headers });
+  const res = await fetch(`${baseUrl}${path}`, { headers });
 
   if (res.status === 403) {
     const remaining = res.headers.get('X-RateLimit-Remaining');
@@ -36,13 +36,14 @@ export async function fetchRepository(
   owner: string,
   repo: string,
   token?: string,
+  baseUrl?: string,
 ): Promise<Repository> {
   const data = await ghFetch<{
     full_name: string;
     description: string;
     default_branch: string;
     html_url: string;
-  }>(`/repos/${owner}/${repo}`, token);
+  }>(`/repos/${owner}/${repo}`, token, baseUrl);
 
   return {
     owner,
@@ -102,11 +103,12 @@ export async function fetchCommits(
     until?: string;
     authors?: string[];
     token?: string;
+    baseUrl?: string;
     fetchDetails?: boolean;
     onProgress?: (p: FetchProgress) => void;
   },
 ): Promise<Commit[]> {
-  const { since, until, authors, token, fetchDetails = false, onProgress } = opts;
+  const { since, until, authors, token, baseUrl, fetchDetails = false, onProgress } = opts;
 
   const allCommits: GHCommit[] = [];
   let page = 1;
@@ -122,6 +124,7 @@ export async function fetchCommits(
     const batch = await ghFetch<GHCommit[]>(
       `/repos/${owner}/${repo}/commits?${params}`,
       token,
+      baseUrl,
     );
 
     if (!Array.isArray(batch) || batch.length === 0) break;
@@ -164,6 +167,7 @@ export async function fetchCommits(
         const detail = await ghFetch<GHCommit>(
           `/repos/${owner}/${repo}/commits/${raw.sha}`,
           token,
+          baseUrl,
         );
         withDetails.push(mapCommit(detail));
       } catch {
