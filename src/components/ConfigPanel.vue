@@ -298,8 +298,9 @@ function handlePlatformChange(e: Event) {
           {{ t('panel.options.showStats') }}
         </label>
 
-        <div class="sub-label" style="margin-top: 12px; margin-bottom: 8px">{{ t('panel.options.layout') }}</div>
+        <label for="layout-select" class="sub-label" style="margin-top: 12px; margin-bottom: 8px">{{ t('panel.options.layout') }}</label>
         <select
+          id="layout-select"
           :value="config.options.layout"
           style="width: 100%; margin-bottom: 8px"
           @change="(e) => updateOption('layout', (e.target as HTMLSelectElement).value)"
@@ -325,8 +326,8 @@ function handlePlatformChange(e: Event) {
       <!-- Connection -->
       <section class="section">
         <div class="section-label">{{ t('panel.connection.label') }}</div>
-        <div class="field-label">{{ t('panel.connection.platform') }}</div>
-        <select style="width: 100%; margin-bottom: 12px" :value="config.platform" @change="handlePlatformChange">
+        <label for="platform-select" class="field-label">{{ t('panel.connection.platform') }}</label>
+        <select id="platform-select" style="width: 100%; margin-bottom: 12px" :value="config.platform" @change="handlePlatformChange">
           <option value="github">GitHub</option>
           <option value="github-enterprise">GitHub Enterprise Server</option>
           <option value="bitbucket-server">Bitbucket Server</option>
@@ -530,6 +531,7 @@ function handlePlatformChange(e: Event) {
 }
 
 .field-label {
+  display: block;
   font-size: 12px;
   color: var(--text-tertiary);
   margin-bottom: 5px;
@@ -537,6 +539,7 @@ function handlePlatformChange(e: Event) {
 }
 
 .sub-label {
+  display: block;
   font-size: 11px;
   color: var(--text-secondary);
   font-weight: 500;

@@ -42,7 +42,7 @@ export function applyAnonymizationWithEmailMask(
 export function parseRepoInput(
   input: string,
   platform: 'github' | 'github-enterprise' | 'bitbucket-server' | 'bitbucket-cloud' | 'gitlab',
-  serverUrl?: string,
+  _serverUrl?: string,
 ): { owner: string; repo: string } | null {
   const trimmed = input.trim().replace(/\.git$/, '').replace(/\/$/, '');
 

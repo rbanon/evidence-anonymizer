@@ -203,7 +203,7 @@ function handleCloseModal() {
           @generate="handleGenerate"
         />
       </div>
-      <div class="main-panel">
+      <main class="main-panel">
         <ReportPreview
           :report="report"
           :loading-state="loadingState"
@@ -211,7 +211,7 @@ function handleCloseModal() {
           :progress="progress"
           @back="handleBack"
         />
-      </div>
+      </main>
     </div>
 
     <Teleport to="body">

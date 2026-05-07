@@ -132,7 +132,7 @@ export async function fetchCommitsBitbucketCloud(
   onProgress?.({ step: 'Fetching commits…', current: 0, total: 0 });
 
   while (nextUrl && pages < 20) {
-    const page = await bbCloudFetch<{ values: BBCloudCommit[]; next?: string }>(nextUrl, username, appPassword);
+    const page: { values: BBCloudCommit[]; next?: string } = await bbCloudFetch<{ values: BBCloudCommit[]; next?: string }>(nextUrl, username, appPassword);
     let done = false;
 
     for (const c of page.values) {
