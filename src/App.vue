@@ -57,6 +57,7 @@ const loadingState = ref<LoadingState>('idle')
 const error = ref<string | null>(null)
 const progress = ref<FetchProgress | null>(null)
 const partialFailure = ref<PartialFailure | null>(null)
+const mobilePanel = ref<'config' | 'report'>('config')
 
 function finishReport(commits: Commit[], repositories: Repository[], cfg: ReportConfig) {
   const sorted = [...commits].sort(
@@ -108,6 +109,7 @@ async function handleGenerate() {
   }
 
   loadingState.value = 'loading'
+  mobilePanel.value = 'report'
   error.value = null
   progress.value = null
   partialFailure.value = null
@@ -178,16 +180,21 @@ function handleContinue() {
   finishReport(partialFailure.value.commits, partialFailure.value.repositories, partialFailure.value.safeConfig)
 }
 
+function handleBack() {
+  mobilePanel.value = 'config'
+}
+
 function handleCloseModal() {
   partialFailure.value = null
   loadingState.value = 'idle'
+  mobilePanel.value = 'config'
 }
 </script>
 
 <template>
   <div class="app-layout">
     <AppHeader class="no-print" />
-    <div class="content-area">
+    <div :class="['content-area', `mobile-${mobilePanel}`]">
       <div class="sidebar no-print">
         <ConfigPanel
           :config="config"
@@ -202,6 +209,7 @@ function handleCloseModal() {
           :loading-state="loadingState"
           :error="error"
           :progress="progress"
+          @back="handleBack"
         />
       </div>
     </div>
@@ -276,6 +284,22 @@ function handleCloseModal() {
   flex: 1;
   overflow-y: auto;
   background: var(--bg-primary);
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 100%;
+    flex-shrink: unset;
+  }
+
+  .content-area.mobile-config {
+    .main-panel { display: none; }
+  }
+
+  .content-area.mobile-report {
+    .sidebar { display: none; }
+    .main-panel { width: 100%; }
+  }
 }
 
 // ─── Modal ────────────────────────────────────────────────────

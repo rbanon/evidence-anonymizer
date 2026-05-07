@@ -96,6 +96,7 @@ export default {
     step3: 'Add anonymization rules to redact sensitive text',
     step4: 'Download the result as a PDF',
     limitNote: 'Commit history only — issues and pull requests are not included.',
+    backToConfig: 'Configure',
   },
   errors: {
     addRepo: 'Add at least one repository.',

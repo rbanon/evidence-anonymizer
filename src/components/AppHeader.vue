@@ -78,6 +78,10 @@ function setLocale(lang: 'en' | 'es') {
     color: var(--text-secondary);
     line-height: 1.2;
     margin: 0;
+
+    @media (max-width: 1024px) {
+      display: none;
+    }
   }
 
   &__controls {

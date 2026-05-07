@@ -2,7 +2,49 @@
   "permissions": {
     "allow": [
       "Bash(npx create-next-app@latest *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(Start-Sleep -Seconds 3)",
+      "Bash(Get-Content \"C:\\\\Users\\\\banon\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-github-evidence-anonymizer\\\\9df84b62-2f6c-44e7-9a1f-cd89f046fe83\\\\tasks\\\\bn3yckapw.output\" -Tail 20)",
+      "Bash(npx tsc *)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "PowerShell(Stop-Process *)",
+      "mcp__ide__getDiagnostics",
+      "Bash(Get-ChildItem -Path \"C:\\\\Projects\\\\github-dashboard\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(npx vue-tsc *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(npx vite *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(node *)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(curl -s \"http://localhost:5178/\")",
+      "Bash(curl -s \"http://localhost:5178/src/components/ReportPreview.vue\")",
+      "Bash(curl -s \"http://localhost:5178/src/App.vue\")",
+      "Bash(curl -s \"http://localhost:5178/src/styles/main.scss\")",
+      "Bash(Copy-Item *)",
+      "PowerShell(Copy-Item *)",
+      "Bash(git rm *)",
+      "Bash(git push *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Projects\\\\github-evidence-anonymizer\" -Force | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}} | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Projects\\\\github-evidence-anonymizer\\\\IDI\" -Recurse | Select-Object @{Name=\"RelativePath\";Expression={$_.FullName -replace [regex]::Escape\\(\"C:\\\\Projects\\\\github-evidence-anonymizer\\\\IDI\\\\\"\\), \"\"}} | Format-Table -AutoSize)",
+      "Bash(Remove-Item \"C:\\\\Projects\\\\github-evidence-anonymizer\\\\src\\\\components\\\\ConfigPanel.tsx\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Projects\\\\github-evidence-anonymizer\\\\src\\\\components\\\\ReportPreview.tsx\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Projects\\\\github-evidence-anonymizer\\\\src\\\\assets\\\\img\\\\rb-logo.eps\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Projects\\\\github-evidence-anonymizer\\\\src\\\\assets\\\\img\\\\rb-logo.jpg\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Projects\\\\github-evidence-anonymizer\\\\src\\\\assets\\\\img\" -Force)"
     ]
+  },
+  "skillOverrides": {
+    "agent-development": "off",
+    "find-skills": "off",
+    "linkedin-writer": "off",
+    "mcp-integration": "off",
+    "plugin-settings": "off",
+    "plugin-structure": "off",
+    "ui-ux-pro-max": "off"
   }
 }

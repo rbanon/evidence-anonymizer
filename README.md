@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GitHub Evidence Anonymizer
 
-## Getting Started
+A browser-based tool for generating anonymized commit-history reports from GitHub, GitLab, and Bitbucket repositories. Everything runs client-side — no data leaves your browser.
 
-First, run the development server:
+## Features
+
+- **Multi-platform**: GitHub, GitHub Enterprise Server, GitLab (cloud & self-hosted), Bitbucket Server, Bitbucket Cloud
+- **Anonymization rules**: replace names, emails, or any text with custom substitutions; auto-anonymize email addresses
+- **Flexible layouts**: group commits by day, by repository, or flat list
+- **PDF export**: browser print dialog, with optional per-author split
+- **i18n**: English and Spanish UI
+
+## Stack
+
+- Vue 3 (Composition API, `<script setup>`)
+- Vite + TypeScript + SCSS
+- vue-i18n v10, date-fns
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:5173](http://localhost:5173).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build   # type-check + Vite bundle
+npm run preview # serve the dist folder
+```
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. Select your platform and enter credentials (token / App Password) if needed
+2. Add one or more repositories (`owner/repo` or full URL)
+3. Set a date range and optional author filter
+4. Add anonymization rules if required
+5. Click **Generate** and download the PDF
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Credentials are used only in the browser and are never stored or sent anywhere except to the target platform API.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project layout
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  components/     Vue components (AppHeader, ConfigPanel, ReportPreview, CommitCard, …)
+  composables/    useTheme
+  i18n/locales/   en.ts, es.ts
+  services/       platform.ts, github.ts, gitlab.ts, bitbucket.ts, reportGenerator.ts, anonymizer.ts
+  types/          index.ts
+  utils/          dates.ts, text.ts
+  styles/         main.scss
+IDI/              reference scripts (do not delete)
+```
